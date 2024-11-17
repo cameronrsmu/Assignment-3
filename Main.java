@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -35,7 +36,7 @@ public class Main {
             return;
         }
 
-        // search operations
+        // search results for test ids
         String[] testIds = {
                 "4c69b61db1fc16e7013b43fc926e502d",
                 "954fb803841ce010626740c8a776e981",
@@ -52,6 +53,23 @@ public class Main {
                 System.out.println(found);
             } else {
                 System.out.println("\nProduct with ID " + id + " not found.");
+            }
+        }
+
+        // get user input for keys to search
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.print("\nEnter a product ID to search (or type 'exit' to stop): ");
+            String userInput = scanner.nextLine().trim();
+            if (userInput.equalsIgnoreCase("exit")) {
+                break;
+            }
+            Product found = tree.search(userInput);
+            if (found != null) {
+                System.out.println("\nFound product:");
+                System.out.println(found);
+            } else {
+                System.out.println("\nProduct with ID " + userInput + " not found.");
             }
         }
 
