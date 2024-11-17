@@ -5,7 +5,6 @@ public class Main {
     public static void main(String[] args) {
         RedBlackTree tree = new RedBlackTree();
 
-        // read and load csv file
         String line;
         boolean firstLine = true;
         try (BufferedReader br = new BufferedReader(new FileReader("amazon-product-data.csv"))) {
@@ -14,8 +13,6 @@ public class Main {
                     firstLine = false;
                     continue;
                 }
-
-                // split csv line, handle quoted fields
                 String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
                 if (fields.length >= 4) {
                     String id = fields[0].trim();
@@ -23,20 +20,15 @@ public class Main {
                     String category = fields[2].trim();
                     String price = fields[3].trim();
 
-                    try {
-                        Product product = new Product(id, name, category, price);
-                        tree.insert(product);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("error");
-                    }
+                    Product product = new Product(id, name, category, price);
+                    tree.insert(product);
                 }
             }
         } catch (IOException e) {
-            System.err.println("error");
+            System.err.println("Error reading CSV file: " + e.getMessage());
             return;
         }
 
-        // search results for test ids
         String[] testIds = {
                 "4c69b61db1fc16e7013b43fc926e502d",
                 "954fb803841ce010626740c8a776e981",
@@ -56,10 +48,52 @@ public class Main {
             }
         }
 
-        // get user input for keys to search
+        System.out.println("\nTesting Duplicate Product Insertion");
+        String duplicateId = "4c69b61db1fc16e7013b43fc926e502d";
+        Product existingProduct = tree.search(duplicateId);
+        System.out.println("Original product with ID " + duplicateId + ":");
+        System.out.println(existingProduct);
+
+        System.out.println("\nAttempting to insert duplicate product with same ID...");
+        try {
+            Product duplicateProduct = new Product(
+                    duplicateId,
+                    "Duplicate Product",
+                    "Test Category",
+                    "$99.99"
+            );
+            tree.insert(duplicateProduct);
+            System.out.println("WARNING: Duplicate insertion succeeded when it should have failed!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Successfully caught duplicate insertion: " + e.getMessage());
+        }
+
+        System.out.println("\nTesting New Product Insertion");
+        String newId = "new_unique_id_12345";
+        System.out.println("Attempting to insert new product with ID: " + newId);
+        try {
+            Product newProduct = new Product(
+                    newId,
+                    "New Product",
+                    "New Category",
+                    "$50.00"
+            );
+            tree.insert(newProduct);
+
+            Product foundNew = tree.search(newId);
+            if (foundNew != null) {
+                System.out.println("Successfully inserted and found new product:");
+                System.out.println(foundNew);
+            } else {
+                System.out.println("Failed to find newly inserted product!");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error inserting new product: " + e.getMessage());
+        }
+
+        System.out.println("\nEnter a product ID to search (or type 'exit' to stop): ");
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.print("\nEnter a product ID to search (or type 'exit' to stop): ");
             String userInput = scanner.nextLine().trim();
             if (userInput.equalsIgnoreCase("exit")) {
                 break;
@@ -71,41 +105,8 @@ public class Main {
             } else {
                 System.out.println("\nProduct with ID " + userInput + " not found.");
             }
+            System.out.print("\nEnter a product ID to search (or type 'exit' to stop): ");
         }
-
-        // insertion of duplicate product
-        try {
-            Product duplicateProduct = new Product(
-                    "4c69b61db1fc16e7013b43fc926e502d",
-                    "Duplicate Product",
-                    "Test Category",
-                    "$99.99"
-            );
-            tree.insert(duplicateProduct);
-        } catch (IllegalArgumentException e) {
-            System.out.println("error");
-        }
-
-        // insertion of a new product
-        try {
-            Product newProduct = new Product(
-                    "new_unique_id_12345",
-                    "New Product",
-                    "New Category",
-                    "$50.00"
-            );
-            tree.insert(newProduct);
-
-            // search for the newly inserted product
-            Product foundNew = tree.search("new_unique_id_12345");
-            if (foundNew != null) {
-                System.out.println("\nInserted and found new product:");
-                System.out.println(foundNew);
-            } else {
-                System.out.println("\nNew product insertion failed.");
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println("error");
-        }
+        scanner.close();
     }
 }
