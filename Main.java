@@ -67,5 +67,27 @@ public class Main {
         } catch (IllegalArgumentException e) {
             System.out.println("error");
         }
+
+        // insertion of a new product
+        try {
+            Product newProduct = new Product(
+                    "new_unique_id_12345",
+                    "New Product",
+                    "New Category",
+                    "$50.00"
+            );
+            tree.insert(newProduct);
+
+            // search for the newly inserted product
+            Product foundNew = tree.search("new_unique_id_12345");
+            if (foundNew != null) {
+                System.out.println("\nInserted and found new product:");
+                System.out.println(foundNew);
+            } else {
+                System.out.println("\nNew product insertion failed.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("error");
+        }
     }
 }
