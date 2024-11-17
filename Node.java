@@ -7,7 +7,7 @@ public class Node {
 
     public Node(Product data) {
         this.data = data;
-        this.isRed = true;  // new nodes are red
+        this.isRed = true;  // New nodes are always red
         this.left = null;
         this.right = null;
         this.parent = null;
