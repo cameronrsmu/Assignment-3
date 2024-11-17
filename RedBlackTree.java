@@ -9,6 +9,10 @@ public class RedBlackTree {
     }
 
     public void insert(Product product) {
+        if (search(product.getId()) != null) {
+            throw new IllegalArgumentException("Product with ID " + product.getId() + " already exists!");
+        }
+
         Node node = new Node(product);
         node.left = NIL;
         node.right = NIL;
@@ -18,11 +22,7 @@ public class RedBlackTree {
 
         while (x != NIL) {
             y = x;
-            int comparison = node.data.getId().compareTo(x.data.getId());
-            if (comparison == 0) {
-                throw new IllegalArgumentException("Product with ID " + product.getId() + " already exists!");
-            }
-            if (comparison < 0) {
+            if (node.data.getId().compareTo(x.data.getId()) < 0) {
                 x = x.left;
             } else {
                 x = x.right;
@@ -42,11 +42,10 @@ public class RedBlackTree {
     }
 
     private void fixInsert(Node k) {
-        Node u;
-        while (k.parent != null && k.parent.isRed) {
+        while (k != root && k.parent != null && k.parent.isRed) {
             if (k.parent == k.parent.parent.right) {
-                u = k.parent.parent.left;
-                if (u.isRed) {
+                Node u = k.parent.parent.left;
+                if (u != null && u.isRed) {
                     u.isRed = false;
                     k.parent.isRed = false;
                     k.parent.parent.isRed = true;
@@ -56,13 +55,15 @@ public class RedBlackTree {
                         k = k.parent;
                         rightRotate(k);
                     }
-                    k.parent.isRed = false;
-                    k.parent.parent.isRed = true;
-                    leftRotate(k.parent.parent);
+                    if (k.parent != null && k.parent.parent != null) {
+                        k.parent.isRed = false;
+                        k.parent.parent.isRed = true;
+                        leftRotate(k.parent.parent);
+                    }
                 }
             } else {
-                u = k.parent.parent.right;
-                if (u.isRed) {
+                Node u = k.parent.parent.right;
+                if (u != null && u.isRed) {
                     u.isRed = false;
                     k.parent.isRed = false;
                     k.parent.parent.isRed = true;
@@ -72,19 +73,19 @@ public class RedBlackTree {
                         k = k.parent;
                         leftRotate(k);
                     }
-                    k.parent.isRed = false;
-                    k.parent.parent.isRed = true;
-                    rightRotate(k.parent.parent);
+                    if (k.parent != null && k.parent.parent != null) {
+                        k.parent.isRed = false;
+                        k.parent.parent.isRed = true;
+                        rightRotate(k.parent.parent);
+                    }
                 }
-            }
-            if (k == root) {
-                break;
             }
         }
         root.isRed = false;
     }
 
     private void leftRotate(Node x) {
+        if (x == null || x.right == null) return;
         Node y = x.right;
         x.right = y.left;
         if (y.left != NIL) {
@@ -103,6 +104,7 @@ public class RedBlackTree {
     }
 
     private void rightRotate(Node x) {
+        if (x == null || x.left == null) return;
         Node y = x.left;
         x.left = y.right;
         if (y.right != NIL) {
@@ -126,10 +128,12 @@ public class RedBlackTree {
     }
 
     private Node searchHelper(Node node, String id) {
-        if (node == NIL || id.equals(node.data.getId())) {
+        if (node == NIL || node == null) {
+            return NIL;
+        }
+        if (id.equals(node.data.getId())) {
             return node;
         }
-
         if (id.compareTo(node.data.getId()) < 0) {
             return searchHelper(node.left, id);
         }
