@@ -9,3 +9,13 @@
 # Search Results (userinput):
 <img width="1104" alt="image2" src="https://github.com/user-attachments/assets/65edacf6-261e-451a-bd5e-20590bacab04">
 
+# Runtime Analysis
+
+Insert Operation:
+The time complexity is O(log n) because the Red-Black Tree stays balanced. Finding the right spot and fixing the tree after insertion involves a few rotations or recoloring, which are quick.
+
+Search Operation:
+The time complexity is O(log n) since the tree’s height is always logarithmic, making it fast to find a node by traversing only a few levels.
+
+Balancing:
+The tree remains balanced by following rules like no two red nodes being adjacent, keeping operations efficient. This ensures both insert and search stay O(log n).
