@@ -9,7 +9,7 @@
 # Search Results (userinput):
 <img width="1104" alt="image2" src="https://github.com/user-attachments/assets/65edacf6-261e-451a-bd5e-20590bacab04">
 
-# Runtime Analysis
+## Runtime Analysis:
 
 # Insert Operation: O(log n)
 The time complexity is O(log n) because the Red-Black Tree stays balanced. Finding the right spot and fixing the tree after insertion involves a few rotations or recoloring, which are quick.
